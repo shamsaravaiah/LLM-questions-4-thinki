@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 from typing import Dict, Any, Optional
 import os
 import google.generativeai as genai
@@ -29,7 +29,9 @@ model = genai.GenerativeModel('gemini-2.5-flash')
 # Request/Response Models
 class Context(BaseModel):
     """Student context - accepts additional fields dynamically."""
-    model_config = ConfigDict(extra='allow')
+    
+    class Config:
+        extra = "allow"
     
     age: int
     onboarding_english_score: Optional[int] = None
@@ -39,7 +41,9 @@ class Context(BaseModel):
 
 class QuestionRequest(BaseModel):
     """Question generation request - accepts additional fields dynamically."""
-    model_config = ConfigDict(extra='allow')
+    
+    class Config:
+        extra = "allow"
     
     action: str
     year_band: str
@@ -73,7 +77,7 @@ def format_context_fields(context: Context) -> str:
         context_lines.append(f"- Language: {context.language}")
     
     # Include any additional/extra fields
-    context_dict = context.model_dump(exclude_none=True)
+    context_dict = context.dict(exclude_none=True)
     standard_fields = {'age', 'onboarding_english_score', 'onboarding_math_score', 'language'}
     
     for key, value in context_dict.items():
@@ -106,7 +110,7 @@ def generate_prompt(request: QuestionRequest) -> str:
         }
         
         # Add any additional request fields as placeholders
-        request_dict = request.model_dump(exclude_none=True)
+        request_dict = request.dict(exclude_none=True)
         for key, value in request_dict.items():
             if key not in {'action', 'year_band', 'subject', 'count', 'ema', 'context', 'template'}:
                 placeholder = f'{{{key}}}'
