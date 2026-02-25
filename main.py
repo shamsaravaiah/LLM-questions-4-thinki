@@ -9,10 +9,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Initialize FastAPI app
-app = FastAPI(
-    title="Thinki Question Generator API",
-    description="API for generating educational questions using Gemini LLM",
-    version="1.0.0"
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # or list your frontend origins, e.g. ["https://your-app.vercel.app", "http://localhost:5173"]
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["*"],
 )
 
 # Configure Gemini API
