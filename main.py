@@ -1,19 +1,22 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Dict, Any, Optional
 import os
 import google.generativeai as genai
 from dotenv import load_dotenv
 
-# Load environment variables
 load_dotenv()
 
-# Initialize FastAPI app
+# Create app FIRST
+app = FastAPI()
+
+# CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # or list your frontend origins, e.g. ["https://your-app.vercel.app", "http://localhost:5173"]
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
